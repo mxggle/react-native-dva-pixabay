@@ -6,22 +6,24 @@ function getData(data){
 export default {
     namespace: 'detail',
     state: {
+        imgDetail:{}
     },
     effects: {
-        *getData({payload:{page = 1,per_page = 10}},{put,call,select}){
-            const imageList = yield select(state => state.app.imageList)
-            // console.log(imageList)
-            const { hits,total } = yield call(getData,{page,per_page});
+        *getData({payload:{id}},{put,call,select}){
+
+            const { hits,total } = yield call(getData,{id});
+            console.log('hits',hits)
+            yield put({
+                type:'save',
+                payload:{
+                    imgDetail:hits[0] || {}
+                }
+            })
         },
     },
     reducers: {
         save(state, { payload }) {
             return { ...state, ...payload }
-        },
-    },
-    subscriptions: {
-        setup({ dispatch }) {
-            dispatch({ type: 'getData',payload:{} })
         },
     },
 }

@@ -26,13 +26,17 @@ class  Home extends React.Component{
             <TouchableHighlight onPress={()=>{this.goDetail(item)}} underlayColor="white">
                 <View style={styles.container}>
                     <Image
-                        source={{ uri: item.previewURL }}
+                        source={{ uri: item.webformatURL }}
                         style={styles.thumbnail}
                     />
-                    <View style={styles.rightContainer}>
-                        <Text style={styles.title}>{item.user}</Text>
-                        <Text style={styles.year}>{item.tags}</Text>
-                    </View>
+                    {/*<Image*/}
+                        {/*source={{ uri: item.previewURL }}*/}
+                        {/*style={styles.thumbnail}*/}
+                    {/*/>*/}
+                    {/*<View style={styles.rightContainer}>*/}
+                        {/*<Text style={styles.title}>{item.user}</Text>*/}
+                        {/*<Text style={styles.year}>{item.tags}</Text>*/}
+                    {/*</View>*/}
                 </View>
             </TouchableHighlight>
         );
@@ -42,7 +46,7 @@ class  Home extends React.Component{
         console.log(page)
         if(!hasMore || loading) return;
         dispatch({
-            type:'app/getData',
+            type:'home/getData',
             payload:{
                 page:page + 1,
             }
@@ -104,7 +108,7 @@ var styles = StyleSheet.create({
 });
 function mapStateToProps(state){
     // console.log(state)
-    return {...state.app,loading:state.loading.models.app}
+    return {...state.home,loading:state.loading.models.home}
 }
 
 export default connect(mapStateToProps)(Home);

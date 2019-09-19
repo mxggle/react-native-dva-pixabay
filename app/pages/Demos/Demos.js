@@ -1,12 +1,9 @@
 import React from 'react'
 import { View,Text } from 'react-native'
 import { connect } from 'react-redux';
-class  User extends React.Component{
+class  Demos extends React.Component{
     static navigationOptions = {
-        title: 'user',
-        headerStyle: {
-            backgroundColor: '#fff',
-        },
+        title: '可用库列表'
     };
     render() {
         const { user = ''} = this.props
@@ -17,5 +14,8 @@ class  User extends React.Component{
         );
     }
 }
-
-export default connect(state => state.app)(User)
+function mapStateToProps(state){
+    // console.log(state)
+    return {...state.home,loading:state.loading.models.home}
+}
+export default connect(mapStateToProps)(Demos)
