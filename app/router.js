@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { TabBarBottom, addNavigationHelpers, createSwitchNavigator, createAppContainer } from 'react-navigation'
+import { createAppContainer } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 
@@ -65,4 +65,4 @@ const AppNavigator = createBottomTabNavigator(
 
 const App = createAppContainer(AppNavigator);
 
-export default App
+export default AppNavigator
