@@ -47,7 +47,7 @@ export default {
     },
     subscriptions: {
         setup({ dispatch }) {
-            // dispatch({ type: 'getData',payload:{} })
+            dispatch({ type: 'getData',payload:{} })
         },
     },
 }

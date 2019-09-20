@@ -65,4 +65,4 @@ const AppNavigator = createBottomTabNavigator(
 
 const App = createAppContainer(AppNavigator);
 
-export default AppNavigator
+export default App
