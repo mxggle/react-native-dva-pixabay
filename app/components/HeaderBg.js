@@ -1,7 +1,7 @@
 import {Animated, ImageBackground, StyleSheet, TextInput,View,Text} from "react-native";
 import React from 'react'
 
-export default function BgHeader({nativeScrollY}) {
+export default function HeaderBg({nativeScrollY}) {
     let translateY = nativeScrollY.interpolate({
         inputRange: [-2000,0,3000],
         outputRange: [300,-100,-1300]

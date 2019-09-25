@@ -15,16 +15,16 @@ export default {
         hasMore:true
     },
     effects: {
-        *getData({payload:{page = 1,per_page = 10}},{put,call,select}){
+        *getData({payload:{page = 1,per_page = 10,searchKey}},{put,call,select}){
             const imageList = yield select(state =>state.home.imageList)
-            const { hits,total } = yield call(getData,{page,per_page});
+            const { hits,total } = yield call(getData,{page,per_page,q:searchKey});
 
             const maximumPage = Math.ceil(total / per_page);
             if(page < maximumPage){
                 yield put({
                     type:'save',
                     payload:{
-                        imageList: [...imageList,...hits],
+                        imageList: page === 1 ? hits :[...imageList,...hits],
                         total,
                         page,
                         per_page

@@ -15,7 +15,7 @@ import {
 import { connect } from 'react-redux';
 import {rendomColor} from 'utils/util'
 import { HEADER_MAX_HEIGHT } from 'utils/constant.js'
-import BgHeader from "components/BgHeader";
+import BgHeader from "components/HeaderBg";
 import HeaderSearch from "components/HeaderSearch";
 
 function FooterCom(){
@@ -33,6 +33,7 @@ class  Home extends React.Component{
             scrollY:null,
             nativeScrollY:new Animated.Value(0)
         }
+        this.node = null
     }
     static navigationOptions = ({ navigation }) => {
         return {
@@ -73,8 +74,6 @@ class  Home extends React.Component{
     }
     loadMore(){
         let {dispatch,hasMore,page,loading} = this.props
-        console.log(page)
-        return ;
         if(!hasMore || loading) return;
         dispatch({
             type:'home/getData',
@@ -88,14 +87,24 @@ class  Home extends React.Component{
             <View style={{paddingTop:350}}></View>
         )
     }
-
+    handleSearch(searchKey){
+        console.log('handleSearch',searchKey)
+        let {dispatch} = this.props
+        dispatch({
+            type:'home/getData',
+            payload:{
+                page:1,
+                searchKey
+            }
+        })
+    }
     render() {
         const { imageList = [],loading} = this.props;
         // let nativeScrollY = Animated.add(
         //     this.nativeScrollY,
         //     Platform.OS === "ios" ? HEADER_MAX_HEIGHT : 0
         // );
-        console.log('app',this.state.nativeScrollY)
+        // console.log('app',this.state.nativeScrollY)
         return (
             <View style={{flex:1, backgroundColor: "#fff"}}>
                 {/*<AnimatedHeader*/}
@@ -103,13 +112,14 @@ class  Home extends React.Component{
                 {/*nativeScrollY={nativeScrollY}*/}
                 {/*/>*/}
                 <BgHeader nativeScrollY={this.state.nativeScrollY}/>
-                <HeaderSearch nativeScrollY={this.state.nativeScrollY}/>
+                <HeaderSearch nativeScrollY={this.state.nativeScrollY} handleSearch={(value)=>{this.handleSearch(value)}} node={this.node}/>
                 {/*<Animated.ScrollView*/}
                     {/*style={styles.scroll}*/}
                     {/*scrollEventThrottle={10}*/}
 
                 {/*>*/}
                     <Animated.FlatList
+                        ref={node=>this.node = node}
                         ListHeaderComponent={this.listHeader}
                         onScroll={Animated.event(
                             [{ nativeEvent: { contentOffset: { y: this.state.nativeScrollY } } }],
