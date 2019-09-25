@@ -1,17 +1,23 @@
 import React from 'react'
 import {
+    Platform,
     Image,
     FlatList,
+    Animated,
     StyleSheet,
+    ScrollView,
     Text,
     View,
     TouchableHighlight,
     ImageBackground,
-    TextInput,
     Dimensions
 } from 'react-native'
 import { connect } from 'react-redux';
 import {rendomColor} from 'utils/util'
+import { HEADER_MAX_HEIGHT } from 'utils/constant.js'
+import BgHeader from "components/BgHeader";
+import HeaderSearch from "components/HeaderSearch";
+
 function FooterCom(){
     return (
         <Text style={styles.loading}>loading...</Text>
@@ -22,21 +28,32 @@ class  Home extends React.Component{
     constructor(props){
         super(props)
         this.renderMovie = this.renderMovie.bind(this)
-        this.listHeader = this.listHeader.bind(this)
-    }
-    static navigationOptions = {
-        title: 'Home',
-        headerTransparent:true,
-        headerStyle:{
-            backgroundColor:'transparent'
+        this.listHeader = this.listHeader.bind(this);
+        this.state = {
+            scrollY:null,
+            nativeScrollY:new Animated.Value(0)
         }
+    }
+    static navigationOptions = ({ navigation }) => {
+        return {
+            headerTitle: "",
+            headerTransparent:true,
+            headerStyle: {
+                backgroundColor: "transparent"
+            },
+            headerTitleStyle: {
+                color: "#FFF"
+            }
+        };
     };
     goDetail(item){
-        this.props.navigation.navigate('Detail',{id:item.id})
+        // this.props.navigation.navigate('Detail',{id:item.id})
     }
+    componentDidMount(){
+    }
+
     renderMovie({ item }) {
         // item也是FlatList中固定的参数名，请阅读FlatList的相关文档
-
         return (
             <TouchableHighlight onPress={()=>{this.goDetail(item)}} underlayColor="white">
                 <View style={styles.container}>
@@ -57,6 +74,7 @@ class  Home extends React.Component{
     loadMore(){
         let {dispatch,hasMore,page,loading} = this.props
         console.log(page)
+        return ;
         if(!hasMore || loading) return;
         dispatch({
             type:'home/getData',
@@ -65,31 +83,52 @@ class  Home extends React.Component{
             }
         })
     }
-    listHeader(imageList){
+    listHeader(){
         return (
-            <Image
-                style={{flex:1,width:Dimensions.get('window').width,height:280}}
-                resizeMode={'cover'}
-                source={{ uri: imageList[2] && imageList[2].webformatURL }}
-            >
-            </Image>
+            <View style={{paddingTop:350}}></View>
         )
     }
-    render() {
-        const { imageList = [],loading} = this.props
 
+    render() {
+        const { imageList = [],loading} = this.props;
+        // let nativeScrollY = Animated.add(
+        //     this.nativeScrollY,
+        //     Platform.OS === "ios" ? HEADER_MAX_HEIGHT : 0
+        // );
+        console.log('app',this.state.nativeScrollY)
         return (
-            <FlatList
-                ListHeaderComponent={()=>this.listHeader(imageList)}
-                data={imageList}
-                renderItem={this.renderMovie}
-                style={styles.list}
-                keyExtractor={(item,index) => `${index}`}
-                ListEmptyComponent={<Text>no data</Text>}
-                ListFooterComponent={FooterCom}
-                ListFooterComponentStyle={loading ? {display:'flex'} : {display:'none'}}
-                onEndReached={()=>{this.loadMore()}}
-            />
+            <View style={{flex:1, backgroundColor: "#fff"}}>
+                {/*<AnimatedHeader*/}
+                {/*title={"Poke-Gallery"}*/}
+                {/*nativeScrollY={nativeScrollY}*/}
+                {/*/>*/}
+                <BgHeader nativeScrollY={this.state.nativeScrollY}/>
+                <HeaderSearch nativeScrollY={this.state.nativeScrollY}/>
+                {/*<Animated.ScrollView*/}
+                    {/*style={styles.scroll}*/}
+                    {/*scrollEventThrottle={10}*/}
+
+                {/*>*/}
+                    <Animated.FlatList
+                        ListHeaderComponent={this.listHeader}
+                        onScroll={Animated.event(
+                            [{ nativeEvent: { contentOffset: { y: this.state.nativeScrollY } } }],
+                            {
+                                useNativeDriver: true
+                            }
+                        )}
+                        data={imageList}
+                        renderItem={this.renderMovie}
+                        style={{...styles.list}}
+                        keyExtractor={(item,index) => `${index}`}
+                        ListEmptyComponent={<Text>no data</Text>}
+                        ListFooterComponent={FooterCom}
+                        ListFooterComponentStyle={loading ? {display:'flex'} : {display:'none'}}
+                        onEndReached={()=>{this.loadMore()}}
+                    />
+                {/*</Animated.ScrollView>*/}
+                {/*</ImageBackground>*/}
+            </View>
         );
     }
 }
@@ -132,6 +171,18 @@ var styles = StyleSheet.create({
         fontSize:16,
         flex:1,
         textAlign:'center'
+    },
+    scroll: {
+        flex: 1,
+        // backgroundColor:'#000'
+        // alignItems: "center",
+        paddingTop:200,
+        // paddingTop: Platform.OS !== "ios" ? HEADER_MAX_HEIGHT : 0
+    },
+    scroll_container: {
+        flex:1,
+        alignItems: "center",
+        paddingTop: Platform.OS !== "ios" ? HEADER_MAX_HEIGHT : 0
     }
 });
 function mapStateToProps(state){
