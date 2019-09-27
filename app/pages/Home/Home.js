@@ -68,6 +68,7 @@ class  Home extends React.Component{
                             style={{...styles.thumbnail,height:item.webformatHeight}}
                         />
                     </ImageBackground>
+                    <Text style={styles.username}>{item.user}</Text>
                 </View>
             </TouchableHighlight>
         );
@@ -151,6 +152,13 @@ var styles = StyleSheet.create({
         justifyContent: "flex-end",
         alignItems: "flex-start",
         backgroundColor: "#F5FCFF",
+    },
+    username:{
+        position:'absolute',
+        left:15,
+        bottom:20,
+        color:'#fff',
+        fontSize:14
     },
     rightContainer: {
         flex: 1,
