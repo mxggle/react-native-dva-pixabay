@@ -13,6 +13,7 @@ const HomeNavigator = createStackNavigator(
         Home:Home,
         Detail:Detail
     },{
+
         navigationOptions:{
             tabBarLabel:'图片',
         },
@@ -24,7 +25,9 @@ const HomeNavigator = createStackNavigator(
             headerTitleStyle: {
                 fontWeight: 'bold',
             },
-        }
+        },
+        mode: 'modal',
+        headerMode: 'none'
     }
 
 )

@@ -10,13 +10,15 @@ import {
     View,
     TouchableHighlight,
     ImageBackground,
-    Dimensions
+    Dimensions,
+    TouchableOpacityBase
 } from 'react-native'
 import { connect } from 'react-redux';
 import {rendomColor} from 'utils/util'
 import { HEADER_MAX_HEIGHT } from 'utils/constant.js'
 import BgHeader from "components/HeaderBg";
 import HeaderSearch from "components/HeaderSearch";
+import ImageGallery from "components/ImageGallery";
 
 function FooterCom(){
     return (
@@ -31,9 +33,12 @@ class  Home extends React.Component{
         this.listHeader = this.listHeader.bind(this);
         this.state = {
             scrollY:null,
-            nativeScrollY:new Animated.Value(0)
+            nativeScrollY:new Animated.Value(0),
+            galleryOpacity:new Animated.Value(0),
+            modelVisible:false
         }
-        this.node = null
+        this.node = null;
+        this.previewId = ''
     }
     static navigationOptions = ({ navigation }) => {
         return {
@@ -47,7 +52,18 @@ class  Home extends React.Component{
             }
         };
     };
-    goDetail(item){
+    goDetail(item,e){
+        
+        // Animated.timing(
+        //     this.state.galleryOpacity,{
+        //         toValue:1,
+        //         duration:500
+        //     }
+        // )
+        this.previewId = item.id
+        this.setState({
+            modelVisible:true
+        })
         // this.props.navigation.navigate('Detail',{id:item.id})
     }
     componentDidMount(){
@@ -56,7 +72,7 @@ class  Home extends React.Component{
     renderMovie({ item }) {
         // item也是FlatList中固定的参数名，请阅读FlatList的相关文档
         return (
-            <TouchableHighlight onPress={()=>{this.goDetail(item)}} underlayColor="white">
+            <TouchableHighlight onPress={(e)=>{this.goDetail(item,e)}} underlayColor="white">
                 <View style={styles.container}>
                     <ImageBackground
                         key={item.previewURL}
@@ -101,44 +117,38 @@ class  Home extends React.Component{
     }
     render() {
         const { imageList = [],loading} = this.props;
-        // let nativeScrollY = Animated.add(
-        //     this.nativeScrollY,
-        //     Platform.OS === "ios" ? HEADER_MAX_HEIGHT : 0
-        // );
-        // console.log('app',this.state.nativeScrollY)
         return (
             <View style={{flex:1, backgroundColor: "#fff"}}>
-                {/*<AnimatedHeader*/}
-                {/*title={"Poke-Gallery"}*/}
-                {/*nativeScrollY={nativeScrollY}*/}
-                {/*/>*/}
                 <BgHeader nativeScrollY={this.state.nativeScrollY}/>
                 <HeaderSearch nativeScrollY={this.state.nativeScrollY} handleSearch={(value)=>{this.handleSearch(value)}} node={this.node}/>
-                {/*<Animated.ScrollView*/}
-                    {/*style={styles.scroll}*/}
-                    {/*scrollEventThrottle={10}*/}
-
-                {/*>*/}
-                    <Animated.FlatList
-                        ref={node=>this.node = node}
-                        ListHeaderComponent={this.listHeader}
-                        onScroll={Animated.event(
-                            [{ nativeEvent: { contentOffset: { y: this.state.nativeScrollY } } }],
-                            {
-                                useNativeDriver: true
-                            }
-                        )}
-                        data={imageList}
-                        renderItem={this.renderMovie}
-                        style={{...styles.list}}
-                        keyExtractor={(item,index) => `${index}`}
-                        ListEmptyComponent={<Text>no data</Text>}
-                        ListFooterComponent={FooterCom}
-                        ListFooterComponentStyle={loading ? {display:'flex'} : {display:'none'}}
-                        onEndReached={()=>{this.loadMore()}}
-                    />
-                {/*</Animated.ScrollView>*/}
-                {/*</ImageBackground>*/}
+                <Animated.FlatList
+                    ref={node=>this.node = node}
+                    ListHeaderComponent={this.listHeader}
+                    onScroll={Animated.event(
+                        [{ nativeEvent: { contentOffset: { y: this.state.nativeScrollY } } }],
+                        {
+                            useNativeDriver: true
+                        }
+                    )}
+                    data={imageList}
+                    renderItem={this.renderMovie}
+                    style={{...styles.list}}
+                    keyExtractor={(item,index) => `${index}`}
+                    ListEmptyComponent={<Text>no data</Text>}
+                    ListFooterComponent={FooterCom}
+                    ListFooterComponentStyle={loading ? {display:'flex'} : {display:'none'}}
+                    onEndReached={()=>{this.loadMore()}}
+                />
+                {
+                <ImageGallery
+                    loadData={()=>this.loadMore()}
+                    listNode={this.node}
+                    previewId={this.previewId}
+                    imageList={imageList}
+                    modelVisible={this.state.modelVisible}
+                    swipeDown={()=>{this.setState({modelVisible:false})}}
+                />
+                }
             </View>
         );
     }
@@ -194,7 +204,7 @@ var styles = StyleSheet.create({
         flex: 1,
         // backgroundColor:'#000'
         // alignItems: "center",
-        paddingTop:200,
+        marginTop:200,
         // paddingTop: Platform.OS !== "ios" ? HEADER_MAX_HEIGHT : 0
     },
     scroll_container: {

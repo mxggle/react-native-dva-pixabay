@@ -27,7 +27,7 @@ class Detail extends React.Component {
         // console.log(imgDetail)
         const { largeImageURL,views,downloads,favorites,likes,comments} = imgDetail;
         return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center',backgroundColor:'transparent'}}>
                 <Image
                     resizeMode={'contain'}
                     style={{width:Dimensions.get('window').width,height:280}}
