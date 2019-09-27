@@ -5,38 +5,46 @@ import { SearchBar } from 'react-native-elements';
 
 export default function HeaderSearch({ nativeScrollY,handleSearch,node}) {
     const [search,setSearch] = useState('')
-    let translateY = new Animated.Value(0),
-        bgOpacity = new Animated.Value(0);
+    let translateY = nativeScrollY.interpolate({
+        inputRange: [0,240,1000],
+        outputRange: [-50,-230,-230]
+    })
+    let bgOpacity = nativeScrollY.interpolate({
+        inputRange: [0,180,240],
+        outputRange: [0,.1,1]
+    })
+    // let translateY = new Animated.Value(0),
+    //     bgOpacity = new Animated.Value(0);
 
     // 绑定滚动事件
     // 这里为了尝试使用timing方法track动态值才这么写
     // 可以直接将此处的toValue值赋值给translateY（见HeaderBg组件）
     // 虽然两种写法在这里效果相同，但是某些情况下还是有区别
-    function bindScrollAni(){
-        Animated.timing(
-            translateY,
-            {
-                toValue:nativeScrollY.interpolate({
-                    inputRange: [0,240,1000],
-                    outputRange: [-50,-230,-230]
-                }),
-                useNativeDriver: true,
-                duration:0
-            }
-        ).start()
-        Animated.timing(
-            bgOpacity,
-            {
-                toValue:nativeScrollY.interpolate({
-                    inputRange: [0,180,240],
-                    outputRange: [0,.1,1]
-                }),
-                useNativeDriver: true,
-                duration:0
-            }
-        ).start()
-    }
-    bindScrollAni();
+    // function bindScrollAni(){
+    //     Animated.timing(
+    //         translateY,
+    //         {
+    //             toValue:nativeScrollY.interpolate({
+    //                 inputRange: [0,240,1000],
+    //                 outputRange: [-50,-230,-230]
+    //             }),
+    //             useNativeDriver: true,
+    //             duration:0
+    //         }
+    //     ).start()
+    //     Animated.timing(
+    //         bgOpacity,
+    //         {
+    //             toValue:nativeScrollY.interpolate({
+    //                 inputRange: [0,180,240],
+    //                 outputRange: [0,.1,1]
+    //             }),
+    //             useNativeDriver: true,
+    //             duration:0
+    //         }
+    //     ).start()
+    // }
+    // bindScrollAni();
 
     function updateSearch(v){
         setSearch(v)

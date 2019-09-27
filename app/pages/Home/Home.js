@@ -29,7 +29,7 @@ function FooterCom(){
 class  Home extends React.Component{
     constructor(props){
         super(props)
-        this.renderMovie = this.renderMovie.bind(this)
+        this.renderItem = this.renderItem.bind(this)
         this.listHeader = this.listHeader.bind(this);
         this.state = {
             scrollY:null,
@@ -69,7 +69,7 @@ class  Home extends React.Component{
     componentDidMount(){
     }
 
-    renderMovie({ item }) {
+    renderItem({ item }) {
         // item也是FlatList中固定的参数名，请阅读FlatList的相关文档
         return (
             <TouchableHighlight onPress={(e)=>{this.goDetail(item,e)}} underlayColor="white">
@@ -131,7 +131,7 @@ class  Home extends React.Component{
                         }
                     )}
                     data={imageList}
-                    renderItem={this.renderMovie}
+                    renderItem={this.renderItem}
                     style={{...styles.list}}
                     keyExtractor={(item,index) => `${index}`}
                     ListEmptyComponent={<Text>no data</Text>}
@@ -184,14 +184,10 @@ var styles = StyleSheet.create({
     },
     thumbnail: {
         flex:1,
-        // width: 150,
         height: 200,
-        // backgroundColor:'#fff'
     },
     list: {
-        // paddingTop: 100,
-        // backgroundColor: "#F5FCFF"
-        backgroundColor:'transparent'
+        backgroundColor:'transparent',
     },
     loading:{
         height: 80,
@@ -200,18 +196,6 @@ var styles = StyleSheet.create({
         flex:1,
         textAlign:'center'
     },
-    scroll: {
-        flex: 1,
-        // backgroundColor:'#000'
-        // alignItems: "center",
-        marginTop:200,
-        // paddingTop: Platform.OS !== "ios" ? HEADER_MAX_HEIGHT : 0
-    },
-    scroll_container: {
-        flex:1,
-        alignItems: "center",
-        paddingTop: Platform.OS !== "ios" ? HEADER_MAX_HEIGHT : 0
-    }
 });
 function mapStateToProps(state){
     // console.log(state)

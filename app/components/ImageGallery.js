@@ -1,4 +1,4 @@
-import {StyleSheet,Text} from "react-native";
+import {StyleSheet,Text,ActivityIndicator} from "react-native";
 import React from 'react'
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { Modal } from 'react-native';
@@ -33,6 +33,7 @@ export default function ImageGallery({ modelVisible,swipeDown,imageList,previewI
     return (
       <Modal visible={modelVisible} transparent={true} animationType={'fade'}>
           <ImageViewer
+            loadingRender={()=><ActivityIndicator size="small" color="#fff" />}
             renderIndicator={()=>null}
             renderHeader={renderHeader}
             onChange={handleChange}
