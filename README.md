@@ -1,0 +1,3 @@
+- 基于`React-native`写的pixabay APP
+- 路由使用`react-navigation`
+- 数据流使用`dva-core`
