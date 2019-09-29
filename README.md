@@ -10,11 +10,7 @@
 ## 使用的技术栈
 `react-native` `react-navigation` `dva-core` `axios`
 ## 预览
-<video id="video" controls="" preload="none" poster="" width="500" height="300">n
-  <source id="mp4" src="https://url.cn/5LhZMnW">
-  <p>Your user agent does not support the HTML5 Video element.</p>
-</video>
-<!-- [live demo](http://45.78.70.213/rn_pixabay.mp4) -->
+[live demo](https://url.cn/5LhZMnW)
 ## start
 
 - install
