@@ -26,8 +26,8 @@ const HomeNavigator = createStackNavigator(
                 fontWeight: 'bold',
             },
         },
-        mode: 'modal',
-        headerMode: 'none'
+        // mode: 'modal',
+        // headerMode: 'none'
     }
 
 )

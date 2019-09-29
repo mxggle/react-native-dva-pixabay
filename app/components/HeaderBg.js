@@ -8,7 +8,7 @@ export default function HeaderBg({nativeScrollY}) {
     })
     return (
         <Animated.View style={{...styles.container,transform: [{ translateY }]}}>
-            <ImageBackground blurRadius={0} source={require('../assets/images/bg.jpg')} style={{height:'100%'}}>
+            <ImageBackground blurRadius={5} source={require('../assets/images/bg.jpg')} style={{height:'100%'}}>
             </ImageBackground>
         </Animated.View>
     );

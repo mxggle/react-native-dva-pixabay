@@ -6,19 +6,37 @@ function getData(data){
 export default {
     namespace: 'detail',
     state: {
-        imgDetail:{}
+        num: 0,
+        imageList:[],
+        page:1,
+        per_page:10,
+        total:0,
+        hasMore:true
     },
     effects: {
-        *getData({payload:{id}},{put,call,select}){
+        *getData({payload:{page = 1,per_page = 10,searchKey}},{put,call,select}){
+            const imageList = yield select(state =>state.detail.imageList)
+            const { hits,total } = yield call(getData,{page,per_page,q:searchKey});
 
-            const { hits,total } = yield call(getData,{id});
-            console.log('hits',hits)
-            yield put({
-                type:'save',
-                payload:{
-                    imgDetail:hits[0] || {}
-                }
-            })
+            const maximumPage = Math.ceil(total / per_page);
+            if(page < maximumPage){
+                yield put({
+                    type:'save',
+                    payload:{
+                        imageList: page === 1 ? hits :[...imageList,...hits],
+                        total,
+                        page,
+                        per_page
+                    }
+                })
+            }else{
+                yield put({
+                    type:'save',
+                    payload:{
+                        hasMore: false
+                    }
+                })
+            }
         },
     },
     reducers: {
@@ -26,4 +44,9 @@ export default {
             return { ...state, ...payload }
         },
     },
+    // subscriptions: {
+    //     setup({ dispatch }) {
+    //         dispatch({ type: 'getData',payload:{} })
+    //     },
+    // },
 }

@@ -1,52 +1,77 @@
-// In App.js in a new project
-
-import React from 'react';
-import { View, Text ,Image,Dimensions} from 'react-native';
+import React from 'react'
+import {
+    View,
+} from 'react-native'
 import { connect } from 'react-redux';
-import {withNavigationFocus} from 'react-navigation'
-class Detail extends React.Component {
-    static navigationOptions = {
-        title: 'Detail',
+import PhotoList from 'components/PhotoList'
+import { withNavigationFocus } from 'react-navigation';
+
+
+class Detail extends React.Component{
+    constructor(props){
+        super(props)
+        this.state = {
+        }
+        this.searchKey = props.navigation.getParam('searchKey')
+    }
+    static navigationOptions = ({ navigation }) => {
+        return {
+            headerTitle: navigation.getParam('searchKey', 'detail'),
+            headerTransparent:false,
+            headerStyle: {
+                backgroundColor: "#fff"
+            },
+            headerTitleStyle: {
+                color: "#000"
+            }
+        };
     };
     componentDidMount(){
-        const {dispatch,isFocused,navigation} = this.props;
+        const {dispatch,isFocused} = this.props;
+        // console.log(this.props.navigation.getParam('searchKey'));
         if(isFocused){
-            const id = navigation.getParam('id');
+            dispatch({
+                type:'detail/save',
+                payload:{
+                    imageList:[]
+                }
+            })  
             dispatch({
                 type:'detail/getData',
                 payload:{
-                    id
+                    searchKey:this.searchKey
                 }
-            })
+            })   
         }
     }
-
+    loadMore(){
+        const {dispatch,hasMore,loading,page} = this.props;
+        console.log('loading',loading);
+        if(!hasMore || loading) return;
+        console.log(this.searchKey);
+        dispatch({
+            type:'detail/getData',
+            payload:{
+                page:page + 1,
+                searchKey:this.searchKey
+            }
+        })
+    }
     render() {
-        const { navigation,imgDetail } = this.props;
-        const id = navigation.getParam('id', 'NO-ID');
-        // console.log(imgDetail)
-        const { largeImageURL,views,downloads,favorites,likes,comments} = imgDetail;
+        const { loading,imageList } = this.props;
         return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center',backgroundColor:'transparent'}}>
-                <Image
-                    resizeMode={'contain'}
-                    style={{width:Dimensions.get('window').width,height:280}}
-                    source={{uri: largeImageURL}}
+            <View style={{flex:1, backgroundColor: "#fff"}}>
+                <PhotoList 
+                    loading={loading}
+                    data={imageList}
+                    loadMore={()=>this.loadMore()}
                 />
-                <View style={{flex:1}}>
-                    <Text>查看数: {views}</Text>
-                    <Text>下载数: {downloads}</Text>
-                    <Text>收藏数：{favorites}</Text>
-                    <Text>点赞数：{likes}</Text>
-                    <Text>评论数: {comments}</Text>
-                </View>
             </View>
         );
     }
 }
 function mapStateToProps(state){
-    return {...state.detail}
+    return {...state.detail,loading:state.loading.models.detail}
 }
 
 export default connect(mapStateToProps)(withNavigationFocus(Detail));
-// export default connect(state => state.app)(Detail)

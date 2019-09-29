@@ -1,44 +1,23 @@
 import React from 'react'
 import {
-    Platform,
-    Image,
-    FlatList,
     Animated,
-    StyleSheet,
-    ScrollView,
-    Text,
     View,
-    TouchableHighlight,
-    ImageBackground,
-    Dimensions,
-    TouchableOpacityBase
 } from 'react-native'
 import { connect } from 'react-redux';
-import {rendomColor} from 'utils/util'
-import { HEADER_MAX_HEIGHT } from 'utils/constant.js'
 import BgHeader from "components/HeaderBg";
 import HeaderSearch from "components/HeaderSearch";
-import ImageGallery from "components/ImageGallery";
-
-function FooterCom(){
-    return (
-        <Text style={styles.loading}>loading...</Text>
-    )
-}
+import HomeCarousel from "components/HomeCarousel";
+import PhotoList from 'components/PhotoList'
 
 class  Home extends React.Component{
     constructor(props){
         super(props)
-        this.renderItem = this.renderItem.bind(this)
         this.listHeader = this.listHeader.bind(this);
         this.state = {
-            scrollY:null,
             nativeScrollY:new Animated.Value(0),
             galleryOpacity:new Animated.Value(0),
-            modelVisible:false
         }
         this.node = null;
-        this.previewId = ''
     }
     static navigationOptions = ({ navigation }) => {
         return {
@@ -52,45 +31,28 @@ class  Home extends React.Component{
             }
         };
     };
-    goDetail(item,e){
-        
-        // Animated.timing(
-        //     this.state.galleryOpacity,{
-        //         toValue:1,
-        //         duration:500
-        //     }
-        // )
-        this.previewId = item.id
-        this.setState({
-            modelVisible:true
-        })
-        // this.props.navigation.navigate('Detail',{id:item.id})
+    goDetail(value){
+        this.props.navigation.navigate('Detail',{searchKey:value})
     }
-    componentDidMount(){
-    }
-
-    renderItem({ item }) {
-        // item也是FlatList中固定的参数名，请阅读FlatList的相关文档
+    listHeader(){
         return (
-            <TouchableHighlight onPress={(e)=>{this.goDetail(item,e)}} underlayColor="white">
-                <View style={styles.container}>
-                    <ImageBackground
-                        key={item.previewURL}
-                        source={{ uri: item.previewURL }}
-                        style={{width: '100%', height: '100%',backgroundColor:rendomColor()}}
-                        blurRadius={5}>
-                        <Image
-                            source={[{ uri: item.webformatURL }]}
-                            style={{...styles.thumbnail,height:item.webformatHeight}}
-                        />
-                    </ImageBackground>
-                    <Text style={styles.username}>{item.user}</Text>
-                </View>
-            </TouchableHighlight>
-        );
+            <View style={{paddingTop:350}}>
+                <HomeCarousel onPress={(value)=>this.goDetail(value)}/>
+            </View>
+        )
     }
+    // handleSearch(searchKey){
+    //     let {dispatch} = this.props
+    //     dispatch({
+    //         type:'home/getData',
+    //         payload:{
+    //             page:1,
+    //             searchKey
+    //         }
+    //     })
+    // }
     loadMore(){
-        let {dispatch,hasMore,page,loading} = this.props
+        const {dispatch,hasMore,loading,page} = this.props;
         if(!hasMore || loading) return;
         dispatch({
             type:'home/getData',
@@ -99,108 +61,33 @@ class  Home extends React.Component{
             }
         })
     }
-    listHeader(){
-        return (
-            <View style={{paddingTop:350}}></View>
-        )
-    }
-    handleSearch(searchKey){
-        console.log('handleSearch',searchKey)
-        let {dispatch} = this.props
-        dispatch({
-            type:'home/getData',
-            payload:{
-                page:1,
-                searchKey
-            }
-        })
-    }
     render() {
-        const { imageList = [],loading} = this.props;
+        const { loading,imageList } = this.props;
         return (
             <View style={{flex:1, backgroundColor: "#fff"}}>
                 <BgHeader nativeScrollY={this.state.nativeScrollY}/>
-                <HeaderSearch nativeScrollY={this.state.nativeScrollY} handleSearch={(value)=>{this.handleSearch(value)}} node={this.node}/>
-                <Animated.FlatList
-                    ref={node=>this.node = node}
-                    ListHeaderComponent={this.listHeader}
-                    onScroll={Animated.event(
+                <HeaderSearch nativeScrollY={this.state.nativeScrollY} handleSearch={(value)=>{this.goDetail(value)}} node={this.node}/>
+               <PhotoList 
+                getNode={node=>{this.node = node}}
+                listHeader={this.listHeader}
+                loading={loading}
+                data={imageList}
+                loadMore={()=>this.loadMore()}
+                onScroll={
+                    Animated.event(
                         [{ nativeEvent: { contentOffset: { y: this.state.nativeScrollY } } }],
                         {
                             useNativeDriver: true
                         }
-                    )}
-                    data={imageList}
-                    renderItem={this.renderItem}
-                    style={{...styles.list}}
-                    keyExtractor={(item,index) => `${index}`}
-                    ListEmptyComponent={<Text>no data</Text>}
-                    ListFooterComponent={FooterCom}
-                    ListFooterComponentStyle={loading ? {display:'flex'} : {display:'none'}}
-                    onEndReached={()=>{this.loadMore()}}
-                />
-                {
-                <ImageGallery
-                    loadData={()=>this.loadMore()}
-                    listNode={this.node}
-                    previewId={this.previewId}
-                    imageList={imageList}
-                    modelVisible={this.state.modelVisible}
-                    swipeDown={()=>{this.setState({modelVisible:false})}}
-                />
+                    )
                 }
+               />
             </View>
         );
     }
 }
-var styles = StyleSheet.create({
-    container: {
-        borderBottomWidth:2,
-        borderBottomColor:'#fff',
-        flex: 1,
-        flexDirection: "row",
-        justifyContent: "flex-end",
-        alignItems: "flex-start",
-        backgroundColor: "#F5FCFF",
-    },
-    username:{
-        position:'absolute',
-        left:15,
-        bottom:20,
-        color:'#fff',
-        fontSize:14
-    },
-    rightContainer: {
-        flex: 1,
-        marginLeft:15
-    },
-    title: {
-        fontSize: 20,
-        marginBottom: 8,
-        textAlign: "left"
-    },
-    year: {
-        textAlign: "left"
-    },
-    thumbnail: {
-        flex:1,
-        height: 200,
-    },
-    list: {
-        backgroundColor:'transparent',
-    },
-    loading:{
-        height: 80,
-        paddingTop:15,
-        fontSize:16,
-        flex:1,
-        textAlign:'center'
-    },
-});
 function mapStateToProps(state){
-    // console.log(state)
     return {...state.home,loading:state.loading.models.home}
 }
 
 export default connect(mapStateToProps)(Home);
-// export default connect(state => state.app)(Home)

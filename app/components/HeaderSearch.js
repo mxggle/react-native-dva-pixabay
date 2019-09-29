@@ -51,7 +51,7 @@ export default function HeaderSearch({ nativeScrollY,handleSearch,node}) {
     }
     function handleFocus(){
         node && node.getNode().scrollToOffset({
-            offset:300
+            offset:260
         })
         // Animated.spring(
         //     translateY,
@@ -128,6 +128,7 @@ export default function HeaderSearch({ nativeScrollY,handleSearch,node}) {
             <View style={styles.search}>
                 <Text style={styles.title}>Pixabay</Text>
                 <SearchBar
+                    cancelButtonProps={{buttonStyle:{color:'#000'}}}
                     onSubmitEditing={handleSubmit}
                     onFocus={handleFocus}
                     onCancel={handleBlur}
