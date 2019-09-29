@@ -4,9 +4,6 @@
 
 我用的是一个图片网站[pixabay](https://pixabay.com/)的API（有没有免费好用的api推荐一下，豆瓣好像用不了了,后面可能会换成unsplash的api），启动项目可能需要翻墙，请求次数也有限制。
 
-接下来主要介绍一下实现的技术栈和主要内容，具体的细节和代码请参考 [react-native-pixabay](https://github.com/mxggle/react-native-dva) 当前最新代码在`develop`分支上
-
-
 ## 使用的技术栈
 `react-native` `react-navigation` `dva-core` `axios`
 ## 预览
